@@ -20,7 +20,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Build App
-        run: npm run build -- --base=/admin-shop-app/
+        run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v4
       # - name: Archive artifact
