@@ -20,23 +20,25 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Build App
-        run: npm run build
+        run: npm run build -- --base=/admin-shop-app/
       - name: Setup Pages
         uses: actions/configure-pages@v4
-      # - name: Archive artifact
-      #   shell: sh
-      #   run: |
-      #     tar \
-      #       --dereference --hard-dereference \
-      #       --directory "dist" \
-      #       -cvf "$RUNNER_TEMP/artifact.tar" \
-      #       --exclude=.git \
-      #       --exclude=.github \
-      #       .
+      - name: Archive artifact
+        shell: sh
+        run: |
+          tar \
+            --dereference --hard-dereference \
+            --directory "dist" \
+            -cvf "$RUNNER_TEMP/artifact.tar" \
+            --exclude=.git \
+            --exclude=.github \
+            .
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          path: './dish'
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          if-no-files-found: error
 
   deploy:
     # Chờ "build" xong mới chạy "deploy"
