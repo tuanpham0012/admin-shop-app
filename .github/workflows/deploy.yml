@@ -1,4 +1,4 @@
-ame: Deploy VueJS Project
+name: Deploy VueJS Project
 
 on:
   push:
