@@ -111,7 +111,7 @@ onBeforeMount(async () => {
 </script>
 <template>
   <div class="card">
-    <h5 class="card-header">Khách hàng</h5>
+    <h5 class="card-header">Khách hàng QT</h5>
     <div class="d-flex justify-content-between mx-3 my-2">
       <div class="d-flex">
         <div class="d-flex align-items-center w-auto me-2">
