@@ -1,63 +1,25 @@
-name: Deploy VueJS Project
+name: Node.js CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  # pull_request:
+  #   branches: [ main ]
 
 jobs:
   build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo  # Checks out the repository.
-        uses: actions/checkout@v4
+    runs-on: self-hosted
 
-      - name: Create Node Environment  # Sets up Node.js environment.
-        uses: actions/setup-node@v4
-        with: 
-          node-version: 20.x
-      - name: Install Dependencies
-        run: npm install
-      - name: Build App
-        run: npm run build -- --base=/admin-shop-app/
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-      - name: Archive artifact
-        shell: sh
-        run: |
-          tar \
-            --dereference --hard-dereference \
-            --directory "dist" \
-            -cvf "$RUNNER_TEMP/artifact.tar" \
-            --exclude=.git \
-            --exclude=.github \
-            .
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
         with:
-          name: github-pages
-          path: ${{ runner.temp }}/artifact.tar
-          if-no-files-found: error
-
-  deploy:
-    # Chờ "build" xong mới chạy "deploy"
-    needs: build
-
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      actions: read
-      contents: read
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
-
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          node-version: ${{ matrix.node-version }}
+      - run: npm
+      - run: npm build
+      # - run: yarn test
