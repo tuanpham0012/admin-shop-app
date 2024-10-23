@@ -236,7 +236,7 @@ li {
     a {
       &.page-link {
         font-size: 12px;
-        width: 2rem !important;
+        // width: 2rem !important;
         min-width: 2rem !important;
         height: 2rem !important;
       }

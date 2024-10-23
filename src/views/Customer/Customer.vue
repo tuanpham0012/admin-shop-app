@@ -111,7 +111,7 @@ onBeforeMount(async () => {
 </script>
 <template>
   <div class="card">
-    <h5 class="card-header">Khách hàng test 8</h5>
+    <h5 class="card-header">Khách hàng</h5>
     <div class="d-flex justify-content-between mx-3 my-2">
       <div class="d-flex">
         <div class="d-flex align-items-center w-auto me-2">
@@ -143,6 +143,8 @@ onBeforeMount(async () => {
             </option> -->
           </select>
         </div>
+        <div class="d-flex align-items-center w-[250px] me-2"><select-search placeholder="-- Vui lòng Chọn --" :listData="customers" display="name" keyValue="id"></select-search></div>
+        
       </div>
       <button class="btn btn-primary" @click="toggleCreate()">
         <i class="feather icon-plus"></i>

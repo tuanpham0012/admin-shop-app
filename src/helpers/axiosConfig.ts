@@ -31,7 +31,7 @@ http.interceptors.response.use(response => {
     return response;
 }, error => {
     console.log("error:", error);
-    errorMessage(error.response.data.title ?? 'something went wrong!')
+    errorMessage(error.message ?? 'something went wrong!')
     document.body.classList.remove("loading");
     return Promise.reject(error);
 });

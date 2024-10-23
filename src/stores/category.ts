@@ -1,11 +1,12 @@
 import { defineStore } from "pinia";
 import { _getList } from "@/helpers/axiosConfig";
+import { apiUrl } from "@/helpers/config";
 
 interface State {
     categories: any | [];
 }
 
-export const useCustomerStore = defineStore("customer", {
+export const useCustomerStore = defineStore("category", {
     state: (): State => {
         return {
             categories: {
@@ -19,7 +20,7 @@ export const useCustomerStore = defineStore("customer", {
 
     actions: {
         getList(query: any) {
-            _getList("http://localhost:5077/Category", query)
+            _getList(`${apiUrl}/Category`, query)
                 .then((res) => {
                     console.log(res.data);
                     this.categories = res.data;

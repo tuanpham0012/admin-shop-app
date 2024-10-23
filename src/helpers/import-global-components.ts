@@ -3,7 +3,7 @@
  */
 import Pagination from "@/components/pagination/Pagination.vue"
 import Modal from "@/components/modals/BaseModal.vue"
-// import SelectSearch from "@component/input-form/SelectSearch.vue"
+import SelectSearch from "@/components/input-form/SelectSearch.vue"
 // import SelectSearchUser from "@component/input-form/SelectSearchUser.vue"
 import Feedback from "@/components/input-form/Feedback.vue"
 
@@ -14,6 +14,7 @@ import Feedback from "@/components/input-form/Feedback.vue"
 const globalComponent = {
     Pagination,
     Modal,
-    Feedback
+    Feedback,
+    SelectSearch
 }
 export default globalComponent

@@ -30,15 +30,15 @@
 
                     <div class="col-sm-6 mb-3">
                         <div class="col-sm-12">
-                            <label for="email" class="form-label required"
+                            <label for="barCode" class="form-label required"
                                 >Barcode</label
                             >
                         </div>
                         <div class="input-group input-group-merge">
                             <input
-                                type="email"
+                                type="barCode"
                                 class="form-control"
-                                id="email"
+                                id="barCode"
                                 v-model="product.barCode"
                             />
                         </div>
@@ -46,32 +46,54 @@
                     </div>
                     <div class="col-sm-6 mb-3">
                         <div class="col-sm-12">
-                            <label for="phone" class="form-label">Đơn vị</label>
+                            <label for="unit" class="form-label">Đơn vị</label>
                         </div>
                         <div class="input-group input-group-merge">
                             <input
                                 type="text"
                                 class="form-control"
+                                id="unit"
                                 v-model="product.unit"
                             />
                         </div>
                         <Feedback :errors="errors?.unit" />
                     </div>
 
-                    <div class="col-sm-6 mb-3" v-if="!props.id">
+                    <div class="col-sm-3 mb-3">
                         <div class="col-sm-12">
-                            <label for="password" class="form-label required"
+                            <label for="price" class="form-label required"
                                 >Giá bán</label
                             >
                         </div>
                         <div class="input-group input-group-merge">
                             <input
                                 type="text"
+                                id="price"
                                 class="form-control"
                                 v-model="product.price"
+                                @keypress="isNumber"
+                                :disabled="product.options.length > 0"
                             />
                         </div>
                         <Feedback :errors="errors?.price" />
+                    </div>
+                    <div class="col-sm-3 mb-3">
+                        <div class="col-sm-12">
+                            <label for="price" class="form-label required"
+                                >Số lượng</label
+                            >
+                        </div>
+                        <div class="input-group input-group-merge">
+                            <input
+                                type="text"
+                                id="price"
+                                class="form-control"
+                                v-model="product.stock"
+                                @keypress="isNumber"
+                                :disabled="product.options.length > 0"
+                            />
+                        </div>
+                        <Feedback :errors="errors?.stock" />
                     </div>
                     <div class="col-sm-6 mb-3">
                         <div class="col-sm-12">
@@ -79,12 +101,12 @@
                                 >Loại sản phẩm</label
                             >
                         </div>
-                        <select
+                        <!-- <select
                             class="form-select"
                             v-model="product.categoryId"
                             id="category"
                         >
-                            <option selected :value="0">--Chọn --</option>
+                            <option selected :value="0">-- Vui lòng Chọn --</option>
                             <option
                                 v-for="(category, index) in categories"
                                 :key="index"
@@ -92,31 +114,43 @@
                             >
                                 {{ category.name }}
                             </option>
-                            <option :value="2">Nữ</option>
-                        </select>
+                        </select> -->
+                        <select-search
+                            placeholder="-- Vui lòng Chọn --"
+                            :listData="categories"
+                            display="name"
+                            keyValue="id"
+                            v-model="product.categoryId"
+                        ></select-search>
                         <Feedback :errors="errors?.categoryId" />
                     </div>
                     <div class="col-sm-6 mb-3">
                         <div class="col-sm-12">
-                            <label for="gender" class="form-label"
+                            <label for="supplier" class="form-label"
                                 >Nhà cung cấp</label
                             >
                         </div>
-                        <select
-                            class="form-select"
+                        <select-search
+                            placeholder="-- Vui lòng Chọn --"
+                            :listData="suppliers"
+                            display="name"
+                            keyValue="id"
                             v-model="product.supplierId"
-                            id="gender"
-                        >
-                            <option selected :value="0">--Chọn --</option>
-                            <option :value="1">Hoạt động</option>
-                            <option :value="2">Đã khoá</option>
-                        </select>
+                        ></select-search>
                         <Feedback :errors="errors?.supplierId" />
                     </div>
                     <div class="col-sm-12 mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">Mô tả sản phẩm</label>
-                        <textarea class="form-control" v-model="product.description" rows="3"></textarea>
-                      </div>
+                        <label
+                            for="exampleFormControlTextarea1"
+                            class="form-label"
+                            >Mô tả sản phẩm</label
+                        >
+                        <textarea
+                            class="form-control"
+                            v-model="product.description"
+                            rows="3"
+                        ></textarea>
+                    </div>
 
                     <!-- Thuộc tính sản phẩm -->
                     <div class="col-sm-12 mb-3">
@@ -141,7 +175,7 @@
                                 <div class="col-sm-6 mb-3 me-2">
                                     <div class="col-sm-12">
                                         <label
-                                            for="password"
+                                            :for="'option-name-' + i"
                                             class="form-label required"
                                             >Thuộc tính</label
                                         >
@@ -150,6 +184,7 @@
                                         <input
                                             type="text"
                                             class="form-control"
+                                            :id="'option-name-' + i"
                                             v-model="option.name"
                                             :class="{
                                                 'is-invalid': optionErrors.find(
@@ -161,14 +196,16 @@
                                 </div>
                                 <div class="col-sm-4 mb-3">
                                     <div class="col-sm-12">
-                                        <label for="gender" class="form-label"
+                                        <label
+                                            :for="'option-visual-' + i"
+                                            class="form-label"
                                             >Loại</label
                                         >
                                     </div>
                                     <select
                                         class="form-select"
                                         v-model="option.visual"
-                                        id="gender"
+                                        :id="'option-visual-' + i"
                                         @change="changeOptionType(i)"
                                     >
                                         <option selected :value="0">
@@ -182,16 +219,12 @@
                             </div>
                             <div class="row col-6">
                                 <div class="col-sm-6">
-                                    <label
-                                        for="gender"
-                                        class="form-label required"
+                                    <label class="form-label required"
                                         >Giá trị</label
                                     >
                                 </div>
                                 <div class="col-sm-6">
-                                    <label for="gender" class="form-label"
-                                        >Nhãn</label
-                                    >
+                                    <label class="form-label">Nhãn</label>
                                 </div>
                                 <div
                                     class="d-flex col-sm-12 mb-1"
@@ -207,7 +240,7 @@
                                             :id="i + '' + j"
                                             :class="{
                                                 'is-invalid': optionErrors.find(
-                                                    (x) => x == 'value-' + j
+                                                    (x) => x == `value-${i}${j}`
                                                 ),
                                             }"
                                             aria-describedby="validationServer03Feedback"
@@ -381,7 +414,6 @@
                                                 id="name"
                                                 v-model="item.price"
                                                 @keypress="isNumber($event)"
-                                                
                                             />
                                         </td>
                                         <td class="w-[150px]">
@@ -412,7 +444,7 @@
             </div>
         </template>
         <template #footer>
-            <button class="btn btn-success" @click="save()">Lưu lại</button>
+            <button class="btn btn-success" :disabled="editing" @click="save()">Lưu lại</button>
             <button
                 class="btn btn-secondary"
                 @click="
@@ -429,7 +461,7 @@
 <script lang="ts" setup>
 import { reactive, ref, onBeforeMount, computed, watch } from "vue";
 import { useProductStore } from "@/stores/product";
-import { errorMessage } from "@/helpers/toast";
+import { errorMessage, successMessage } from "@/helpers/toast";
 import { isNumber } from "@/helpers/helpers";
 import { v4 as uuidv4 } from "uuid";
 const props = defineProps({
@@ -440,11 +472,15 @@ const props = defineProps({
     },
 });
 
+const emits = defineEmits(['close'])
+
 const productStore = useProductStore();
 
 const optionErrors = ref<Array<String>>([]);
 
 const defaultColor = ref("#ffffff");
+
+const editing = ref(true)
 
 const fillAll = reactive({
     price: 0,
@@ -452,61 +488,68 @@ const fillAll = reactive({
     barCode: "",
 });
 
-const product = reactive({
+const newProduct = reactive({
     id: null,
     name: "",
     price: 0,
+    stock: 0,
     unit: "",
     description: "",
     alias: "",
     categoryId: null,
     supplierId: null,
     options: [
-        {
-            productId: null,
-            name: "",
-            visual: 0,
-            order: 0,
-            optionValues: [
-                {
-                    id: uuidv4(),
-                    value: "",
-                    label: "",
-                },
-            ],
-        },
+        // {
+        //     productId: null,
+        //     code: uuidv4(),
+        //     name: "",
+        //     visual: 0,
+        //     order: 0,
+        //     optionValues: [
+        //         {
+        //             code: uuidv4(),
+        //             value: "",
+        //             label: "",
+        //         },
+        //     ],
+        // },
     ],
     skus: [],
 });
+
+const product = computed( () => productStore.$state.entry ?? newProduct)
 
 const maxOptionValue = ref(10);
 
 const errors = ref<any>(null);
 
 const categories = computed(() => productStore.$state.categories.data);
+const suppliers = computed(() => productStore.$state.suppliers.data);
 
 const toggleAddOption = () => {
     const option = {
+        code: uuidv4(),
         productId: null,
         name: "",
         visual: 0,
         order: 0,
         optionValues: [
             {
-                id: uuidv4(),
+                code: uuidv4(),
                 value: "",
                 label: "",
             },
         ],
     };
-    product.options.push(option);
+    product.value.options.push(option);
+    editing.value = true
 };
 
 const changeOptionType = (index: any) => {
-    product.options[index].optionValues = [
+    product.value.options[index].optionValues = [
         {
-            id: uuidv4(),
-            value: product.options[index].visual == 1 ? defaultColor.value : "",
+            code: uuidv4(),
+            value: product.value.options[index].visual == 1 ? defaultColor.value : "",
             label: "",
         },
     ];
@@ -514,28 +557,31 @@ const changeOptionType = (index: any) => {
 
 const toggleAddOptionValue = (optionIndex: any) => {
     if (
-        product.options[optionIndex].optionValues.length >= maxOptionValue.value
+        product.value.options[optionIndex].optionValues.length >= maxOptionValue.value
     ) {
         return;
     }
     const value = {
-        id: uuidv4(),
+        code: uuidv4(),
         value:
-            product.options[optionIndex].visual == 1 ? defaultColor.value : "",
+            product.value.options[optionIndex].visual == 1 ? defaultColor.value : "",
         label: "",
     };
-    product.options[optionIndex].optionValues.push(value);
+    product.value.options[optionIndex].optionValues.push(value);
+    editing.value = true
 };
 
 const toggleDeleteOption = (index: any) => {
-    product.options.splice(index, 1);
+    product.value.options.splice(index, 1);
+    editing.value = true
 };
 const toggleDeleteOptionValue = (i: any, j: any) => {
-    product.options[i].optionValues.splice(j, 1);
+    product.value.options[i].optionValues.splice(j, 1);
+    editing.value = true
 };
 
 const toggleFillAll = () => {
-    product.skus.map((sku: any) => {
+    product.value.skus.map((sku: any) => {
         sku.price = fillAll.price;
         sku.stock = fillAll.stock;
         sku.barCode = fillAll.barCode;
@@ -544,23 +590,23 @@ const toggleFillAll = () => {
 };
 
 const generateSKUs = () => {
-    if (product.options.length < 1) return;
-    product.options.sort(
-        (a, b) => a.optionValues.length - b.optionValues.length
+    if (product.value.options.length < 1) return;
+    product.value.options.sort(
+        (a:any, b:any) => a.optionValues.length - b.optionValues.length
     );
 
-    const arr = product.options.map((option) =>
-        option.optionValues.map((x: any) => x.id)
+    const arr = product.value.options.map((option:any) =>
+        option.optionValues.map((x: any) => x.code)
     );
     optionErrors.value = [];
-    const arrFlat = product.options
-        .map((option, i) => {
+    const arrFlat = product.value.options
+        .map((option:any, i:number) => {
             if (option.name == "") {
                 optionErrors.value.push("option-" + i);
             }
-            return option.optionValues.map((value, j) => {
+            return option.optionValues.map((value:any, j:number) => {
                 if (value.value == "") {
-                    optionErrors.value.push("value-" + j);
+                    optionErrors.value.push(`value-${i}${j}`);
                 }
                 if (value.label == "") {
                     value.label = value.value;
@@ -575,15 +621,13 @@ const generateSKUs = () => {
         return;
     }
 
-    product.skus = generateCombinations(arr).map((item: any) => {
-        console.log(item);
+    product.value.skus = generateCombinations(arr).map((item: any) => {
 
         if (typeof item == "string") {
-            item = [arrFlat.find((x: any) => x.id == item)];
+            item = [arrFlat.find((x: any) => x.code == item)];
         } else {
-            item = item.map((i: any) => arrFlat.find((x: any) => x.id == i));
+            item = item.map((i: any) => arrFlat.find((x: any) => x.code == i));
         }
-        console.log(item);
 
         return {
             id: null,
@@ -595,6 +639,7 @@ const generateSKUs = () => {
             variants: item,
         };
     });
+    editing.value = false
     // console.log(rs);
 };
 
@@ -624,22 +669,27 @@ const generateCombinations = (arrays: any) => {
 };
 
 const save = () => {
-    if (product.id == null) {
-        productStore.create(product);
+    if(editing){
+        return
+    }
+    if (product.value.id == null) {
+        productStore.create(product).then( res => {
+            console.log(res);
+            successMessage(res.data?.message ?? 'Thêm mới thành công!');
+            emits('close', true)
+        });
     }
 };
 
 onBeforeMount(async () => {
     await productStore.getListCategory({});
+    await productStore.getListSupplier({});
+    if(props.id){
+        productStore.show(props.id)
+    }else{
+        productStore.$state.entry = null
+    }
 });
 </script>
 <style lang="scss" scoped>
-.list-variants {
-    &::after {
-        content: " | ";
-    }
-    &:last-child::after {
-        content: "";
-    }
-}
 </style>

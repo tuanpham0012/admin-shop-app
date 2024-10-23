@@ -20,13 +20,11 @@ const closeModal = () => {
 
 <template>
     <div
-        class="modal fade show"
+        class="modal"
         id="staticBackdrop"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         tabindex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
     >
         <div
             class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
@@ -75,24 +73,24 @@ const closeModal = () => {
     --bs-modal-footer-border-color: var(--bs-border-color);
     --bs-modal-footer-border-width: var(--bs-border-width);
     background-color: var(--bs-modal-color);
-    z-index: 10 !important;
+    z-index: 10;
 }
 
-.loading-spinner {
-    width: 30px;
-    height: 30px;
-    border: 2px solid indigo;
-    border-radius: 50%;
-    border-top-color: #0001;
-    display: inline-block;
-    animation: loadingspinner 0.7s linear infinite;
-}
-@keyframes loadingspinner {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
+// .loading-spinner {
+//     width: 30px;
+//     height: 30px;
+//     border: 2px solid indigo;
+//     border-radius: 50%;
+//     border-top-color: #0001;
+//     display: inline-block;
+//     animation: loadingspinner 0.7s linear infinite;
+// }
+// @keyframes loadingspinner {
+//     0% {
+//         transform: rotate(0deg);
+//     }
+//     100% {
+//         transform: rotate(360deg);
+//     }
+// }
 </style>

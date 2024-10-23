@@ -6,19 +6,21 @@ import {
     _update,
     _destroy,
 } from "@/helpers/axiosConfig";
+import { apiUrl } from "@/helpers/config";
 
 interface State {
-    products: any | [];
-    product: any | null;
+    entries: any | [];
+    entry: any | null;
     errors: any | null;
     categories: any | [],
     suppliers: any
 }
 
+
 export const useProductStore = defineStore("product", {
     state: (): State => {
         return {
-            products: {
+            entries: {
                 code: 200,
                 message: "",
                 data: [],
@@ -36,24 +38,24 @@ export const useProductStore = defineStore("product", {
                 data: [],
                 meta: null,
             },
-            product: null,
+            entry: null,
             errors: null,
         };
     },
 
     actions: {
         async getList(query: any) {
-            await _getList("http://localhost:5077/Customer", query)
+            await _getList(`${apiUrl}/products`, query)
                 .then((res) => {
                     console.log(res.data);
-                    this.products = res.data;
+                    this.entries = res.data;
                 })
                 .catch((err) => {
                     console.log(err);
                 });
         },
         async getListCategory(query: any) {
-            await _getList("http://localhost:5077/Category", query)
+            await _getList(`${apiUrl}/categories`, query)
                 .then((res) => {
                     console.log(res.data);
                     this.categories = res.data;
@@ -63,7 +65,7 @@ export const useProductStore = defineStore("product", {
                 });
         },
         async getListSupplier(query: any) {
-            await _getList("http://localhost:5077/Supplier", query)
+            await _getList(`${apiUrl}/suppliers`, query)
                 .then((res) => {
                     console.log(res.data);
                     this.suppliers = res.data;
@@ -73,12 +75,12 @@ export const useProductStore = defineStore("product", {
                 });
         },
         async create(data: any) {
-            return await _create("http://localhost:5077/Product", data);
+            return await _create(`${apiUrl}/products`, data);
         },
         show(id: any) {
-            _show("http://localhost:5077/Customer/" + id)
+            _show(`${apiUrl}/products/${id}`)
                 .then((res) => {
-                    this.product = res.data;
+                    this.entry = res.data.data;
                 })
                 .catch((err) => {
                     console.log(err);

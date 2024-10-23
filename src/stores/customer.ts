@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { _getList, _create, _show, _update, _destroy} from '@/helpers/axiosConfig'
+import { apiUrl } from '@/helpers/config'
 
 interface State {
     customers: Customers
@@ -47,7 +48,7 @@ export const useCustomerStore = defineStore('customer', {
 
       actions: {
         getList(query: any) {
-            _getList('http://localhost:5077/Customer', query)
+            _getList(`${apiUrl}/customers`, query)
             .then( res => {
                 console.log(res.data);
                 this.customers = res.data
@@ -56,10 +57,10 @@ export const useCustomerStore = defineStore('customer', {
             })
         },
         async create(data:any){
-            return await _create('http://localhost:5077/Customer', data);
+            return await _create(`${apiUrl}/customers`, data);
         },
         show(id:any){
-            _show('http://localhost:5077/Customer/' + id).
+            _show(`${apiUrl}/Customer/${id}`).
             then(res => {
                 this.customer = res.data
             })
@@ -70,10 +71,10 @@ export const useCustomerStore = defineStore('customer', {
             )
         },
         async update(id:any, data:any){
-            return await _update('http://localhost:5077/Customer/' + id, data)
+            return await _update(`${apiUrl}/customers/${id}`, data)
         },
         async delete(id:any){
-            return await _destroy('http://localhost:5077/Customer/' + id);
+            return await _destroy(`${apiUrl}/customers/${id}`);
         }
       }
 })
